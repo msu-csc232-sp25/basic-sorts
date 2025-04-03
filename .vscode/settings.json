@@ -4,6 +4,7 @@
     "files.insertFinalNewline": true,
     "files.associations": {
         "**/include/c++/**": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "cmath": "cpp"
     }
 }
