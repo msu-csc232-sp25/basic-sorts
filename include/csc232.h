@@ -65,6 +65,7 @@ using std::setw;
 namespace csc232
 {
     // Add any user-defined functions prescribed in your assignment below
+
     template <typename T>
     void shell_sort( T the_array[], int n )
     {
@@ -72,14 +73,14 @@ namespace csc232
         {
             for ( auto unsorted = gap; unsorted < n; ++unsorted )
             {
-                T next_item = the_array[unsorted];
+                T next_item = the_array[ unsorted ];
                 auto location = unsorted;
-                while ((location >= gap) && (the_array[location - gap] > next_item))
+                while ( ( location >= gap ) && ( the_array[ location - gap ] > next_item ) )
                 {
-                    the_array[location] = the_array[location - gap];
+                    the_array[ location ] = the_array[ location - gap ];
                     location = location - gap;
                 } // end while
-                the_array[location] = next_item;
+                the_array[ location ] = next_item;
             } // end for
         } // end for
     } // end shell_sort
