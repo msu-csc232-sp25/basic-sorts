@@ -1,0 +1,93 @@
+name: Autograding with Linter and Unit Tests
+'on':
+  - push
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  cpp-linter:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: 'file'
+          tidy-checks: '' # Set to empty string to use .clang-tidy config file.
+          step-summary: true
+          extra-args: '-std=c++17 -I./include -I/usr/include/c++/9 -I/usr/include/c++/9/experimental -Wall'
+          thread-comments: ${{ github.event_name == 'pull_request' && 'update' }}
+          files-changed-only: false
+          ignore: '.github|build|src/test/cpp'
+
+      - name: Fail fast?!
+        if: steps.linter.outputs.clang-tidy-checks-failed > 0
+        run: |
+          echo "Some linter checks failed. ${{ steps.linter.outputs.checks-failed }}"
+          exit 1
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: task1_test
+        id: task1_test
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: task1_test
+          setup-command: 'cmake -B ./build && cmake --build ./build --target task1_test'
+          command: 'cd ./build && ./task1_test'
+          timeout: 10
+          max-score: 1
+      - name: task2_test
+        id: task2_test
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: task2_test
+          setup-command: 'cmake -B ./build && cmake --build ./build --target task2_test'
+          command: 'cd ./build && ./task2_test'
+          timeout: 10
+          max-score: 1
+      - name: task3_test
+        id: task3_test
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: task3_test
+          setup-command: 'cmake -B ./build && cmake --build ./build --target task3_test'
+          command: 'cd ./build && ./task3_test'
+          timeout: 10
+          max-score: 1
+      - name: task4_test
+        id: task4_test
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: task4_test
+          setup-command: 'cmake -B ./build && cmake --build ./build --target task4_test'
+          command: 'cd ./build && ./task4_test'
+          timeout: 10
+          max-score: 1
+      - name: task5_test
+        id: task5_test
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: task5_test
+          setup-command: 'cmake -B ./build && cmake --build ./build --target task5_test'
+          command: 'cd ./build && ./task5_test'
+          timeout: 10
+          max-score: 1
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          TASK1_TEST_RESULTS: "${{steps.task1_test.outputs.result}}"
+          TASK2_TEST_RESULTS: "${{steps.task2_test.outputs.result}}"
+          TASK3_TEST_RESULTS: "${{steps.task3_test.outputs.result}}"
+          # TASK4_TEST_RESULTS: "${{steps.task4_test.outputs.result}}"
+          # TASK5_TEST_RESULTS: "${{steps.task5_test.outputs.result}}"
+        with:
+         runners: task1_test,task2_test,task3_test
+        # runners: task1_test,task2_test,task3_test,task4_test,task5_test
