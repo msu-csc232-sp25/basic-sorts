@@ -1,6 +1,7 @@
 {
     "editor.formatOnSave": true,
     "C_Cpp.clang_format_fallbackStyle": "LLVM",
+    "files.insertFinalNewline": true,
     "files.associations": {
         "**/include/c++/**": "cpp",
         "algorithm": "cpp"
